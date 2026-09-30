@@ -42,8 +42,8 @@
   .cite::before { content: ""; width: 26px; height: 1px; background: var(--gold); }
   .stack { display: flex; flex-direction: column; }
 
-  /* 画像枠（モノクロ処理）。<img> を入れると差し替え */
-  .slot { position: relative; background: #f1f0ee; filter: grayscale(1); overflow: hidden; }
+  /* 画像枠。<img> を入れると差し替え */
+  .slot { position: relative; background: #f1f0ee; overflow: hidden; }
   .slot:empty::after {
     content: attr(data-label); position: absolute; inset: 0; display: grid; place-items: center;
     font-size: 11px; letter-spacing: .08em; color: var(--muted);
