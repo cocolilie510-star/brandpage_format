@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--
+  ブランド紹介ページ テンプレート
+  使い方は docs/brand-page-format.md を参照。
+  {{…}} をすべて置き換えること（置き換え漏れは grep "{{" で確認）。
+  任意セクション（05）は「OPTIONAL」〜「/OPTIONAL」のコメントで囲んだ範囲ごと削除できる。
+-->
+<title>{{BRAND_EN}} | ブランド紹介</title>
+<meta name="description" content="{{META_DESCRIPTION}}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Shippori+Mincho+B1:wght@400;500&family=Noto+Sans+JP:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #201e1d;
+    --text: #3a3633;
+    --sub: #5a5551;
+    --muted: #8a8379;
+    --gold: #b08a4a;
+    --gold-label: #8a6a2f;
+    --gold-light: #c9a663;
+    --hair: #e2ded8;
+    --paper: #fff;
+    --cream: #fbf9f6;
+    --rule: 2px solid var(--ink);
+    --mincho: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --latin: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --sans: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+    --pad: 24px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 64px; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  p, h1, h2, h3 { margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* 共通パーツ */
+  .label { font-family: var(--latin); font-size: 10px; letter-spacing: .28em; color: var(--gold-label); }
+  .h { font-family: var(--mincho); font-weight: 500; font-size: 28px; line-height: 1.5; }
+  .body { font-size: 14px; line-height: 2.2; color: var(--text); text-wrap: pretty; }
+  .gold-line { height: 1px; background: var(--gold); border: 0; margin: 0; }
+  .cite { display: flex; align-items: center; gap: 14px; font-size: 12px; letter-spacing: .14em; color: var(--sub); }
+  .cite::before { content: ""; width: 26px; height: 1px; background: var(--gold); }
+  .stack { display: flex; flex-direction: column; }
+
+  /* 画像枠。<img> を入れると差し替え */
+  .slot { position: relative; background: #f1f0ee; overflow: hidden; }
+  .slot:empty::after {
+    content: attr(data-label); position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: 11px; letter-spacing: .08em; color: var(--muted);
+    border: 1px dashed #cfcac3;
+  }
+
+  /* ヘッダー */
+  .header {
+    position: sticky; top: 0; z-index: 10; background: var(--paper);
+    border-bottom: var(--rule);
+  }
+  .header__bar { display: flex; justify-content: space-between; align-items: center; padding: 16px var(--pad); }
+  .logo { font-family: var(--latin); font-weight: 500; font-size: 16px; letter-spacing: .34em; }
+  .year { font-family: var(--latin); font-size: 11px; letter-spacing: .24em; color: var(--gold-label); }
+  .nav {
+    display: flex; gap: 24px; overflow-x: auto; scrollbar-width: none;
+    padding: 0 var(--pad) 12px; font-family: var(--latin); font-size: 10px; letter-spacing: .18em;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a { white-space: nowrap; padding: 4px 0; }
+  .nav .year { display: none; }
+  .cta__inner > div { display: flex; flex-direction: column; gap: 22px; }
+
+  section { border-bottom: var(--rule); }
+
+  /* ヒーロー */
+  .hero__text { padding: 48px var(--pad) 40px; gap: 22px; }
+  .hero__title { font-family: var(--mincho); font-weight: 400; font-size: 30px; line-height: 1.5; letter-spacing: .02em; }
+  .stats { display: flex; border-top: 1px solid var(--hair); padding-top: 18px; margin-top: 8px; }
+  .stats > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; overflow-wrap: anywhere; }
+  .stats b { font-family: var(--latin); font-weight: 400; font-size: 22px; }
+  .stats span { font-size: 9px; letter-spacing: .1em; color: var(--muted); }
+  .hero__img { aspect-ratio: 4 / 3; border-top: var(--rule); }
+
+  /* 01 ストーリー */
+  .history { padding: 56px var(--pad); gap: 28px; }
+  .message { border-left: 2px solid var(--gold); padding: 2px 0 2px 20px; gap: 18px; }
+  .message p { font-family: var(--mincho); font-size: 16px; line-height: 2.05; }
+
+  /* 02 / 04 分割（画像＋テキスト） */
+  .split__img { aspect-ratio: 4 / 3; }
+  .split__text { padding: 48px var(--pad) 56px; gap: 22px; }
+  .split__text .body { font-size: 13px; line-height: 2.25; }
+  .split--img-left .split__img { border-bottom: var(--rule); }
+  .split--img-right .split__img { border-top: var(--rule); }
+  .quote-s { font-family: var(--mincho); font-size: 18px; line-height: 2; }
+
+  /* 03 引用＋3本柱 */
+  .art { padding: 56px var(--pad) 0; }
+  .art__head { gap: 22px; margin-bottom: 40px; }
+  .quote-l { font-family: var(--mincho); font-weight: 400; font-size: 22px; line-height: 1.9; letter-spacing: .02em; text-wrap: pretty; }
+  .pillars { border-top: var(--rule); margin: 0 calc(var(--pad) * -1); padding: 0 var(--pad); }
+  .pillar { padding: 28px 0 32px; gap: 12px; }
+  .pillar + .pillar { border-top: 1px solid var(--hair); }
+  .pillar .label { letter-spacing: .2em; }
+  .pillar .body { font-size: 13px; }
+
+  /* CTA */
+  .cta { position: relative; background: var(--ink); color: var(--cream); border-bottom: 0; }
+  .cta .slot { position: absolute; inset: 0; background: var(--ink); }
+  .cta .slot:empty::after { border: 0; color: #6d6862; align-items: start; padding-top: 12px; }
+  .cta__veil { position: absolute; inset: 0; background: rgba(18, 17, 16, .62); }
+  .cta__inner { position: relative; padding: 64px var(--pad); gap: 22px; }
+  .cta__inner::before { content: ""; width: 52px; height: 1px; background: var(--gold-light); }
+  .cta__title { font-family: var(--mincho); font-weight: 400; font-size: 24px; line-height: 1.7; letter-spacing: .03em; }
+  .cta__lead { font-size: 13px; line-height: 2.2; color: rgba(251, 249, 246, .72); }
+  .btn {
+    display: flex; justify-content: center; align-items: center; gap: 14px;
+    border: 1px solid var(--gold-light); color: var(--gold-light);
+    font-family: var(--latin); font-size: 12px; letter-spacing: .16em;
+    padding: 16px 24px; min-height: 52px; transition: background .2s, color .2s;
+  }
+  .btn:hover, .btn:active { background: var(--gold-light); color: var(--ink); }
+
+  /* フッター */
+  .footer { background: var(--ink); padding: 28px var(--pad) calc(28px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #34312f; }
+  .footer .logo { font-size: 12px; letter-spacing: .32em; color: var(--gold-light); }
+  .footer small { font-family: var(--latin); font-size: 10px; letter-spacing: .14em; color: var(--muted); }
+
+    /* 05 コレクション紹介（任意） */
+  .coll__intro { padding: 56px var(--pad) 48px; gap: 22px; }
+  .coll__lead { font-family: var(--mincho); font-size: 16px; line-height: 2.05; text-wrap: pretty; }
+  .coll__top { aspect-ratio: 1 / 1; border-top: var(--rule); border-bottom: var(--rule); }
+  .items { padding: 0 var(--pad); }
+  .item { padding: 40px 0 44px; gap: 16px; }
+  .item + .item { border-top: 1px solid var(--hair); }
+  .item__img { aspect-ratio: 4 / 3; margin-bottom: 8px; }
+  .item__name { font-family: var(--mincho); font-weight: 500; font-size: 20px; line-height: 1.6; letter-spacing: .04em; }
+  .item .body { font-size: 13px; line-height: 2.2; }
+
+  /* PC（900px以上：最大幅1180pxのグリッド） */
+  @media (min-width: 900px) {
+    :root { --pad: 48px; }
+    body { background: #f3f2f2; }
+    .page { max-width: 1180px; margin: 0 auto; background: var(--paper); border-left: 1px solid #d5d1cb; border-right: 1px solid #d5d1cb; }
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 20px var(--pad); }
+    .header__bar { padding: 0; }
+    .header__bar .year { display: none; }
+    .nav { padding: 0; gap: 30px; font-size: 11px; overflow: visible; }
+    .nav .year { display: inline; }
+    .hero { display: grid; grid-template-columns: 520px 1fr; }
+    .hero__text { padding: 64px 48px; gap: 26px; border-right: var(--rule); }
+    .hero__title { font-size: 40px; line-height: 1.45; white-space: nowrap; }
+    .stats { margin-top: auto; }
+    .stats b { font-size: 26px; }
+    .stats span { font-size: 10px; }
+    .hero__img { aspect-ratio: auto; height: 520px; border-top: 0; }
+    .history { display: grid; grid-template-columns: 236px 1fr 1fr; gap: 48px; padding: 72px 48px; }
+    .history .h { margin-top: 14px; }
+    .message p { font-size: 17px; }
+    .message { padding-left: 26px; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; }
+    .split__img { aspect-ratio: auto; min-height: 520px; }
+    .split__text { padding: 64px 48px; }
+    .split--img-left .split__img { border-bottom: 0; border-right: var(--rule); }
+    .split--img-right .split__img { border-top: 0; min-height: 560px; }
+    .split--img-right .split__text { border-right: var(--rule); }
+    .quote-s { font-size: 19px; }
+    .art { padding: 72px 48px 0; }
+    .art__head { display: grid; grid-template-columns: 236px 1fr; gap: 48px; margin-bottom: 44px; }
+    .quote-l { font-size: 30px; }
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; padding: 0; }
+    .pillar { padding: 34px 32px 40px; }
+    .pillar:first-child { padding-left: 0; }
+    .pillar:last-child { padding-right: 0; }
+    .pillar + .pillar { border-top: 0; border-left: 1px solid var(--hair); }
+    .cta { height: 380px; }
+    .cta__inner { height: 100%; display: grid; grid-template-columns: 520px 1fr; align-items: center; padding: 0; gap: 0; }
+    .cta__inner::before { display: none; }
+    .cta__inner > div { padding: 0 48px; display: flex; flex-direction: column; gap: 18px; }
+    .cta__inner > div:first-child::before { content: ""; width: 52px; height: 1px; background: var(--gold-light); }
+    .cta__title { font-size: 28px; }
+    .cta__lead { max-width: 420px; }
+    .btn { align-self: flex-start; }
+    .footer { flex-direction: row; justify-content: space-between; align-items: center; padding: 30px 48px; }
+    .coll__head { display: grid; grid-template-columns: 1fr 1fr; border-bottom: var(--rule); }
+    .coll__top { aspect-ratio: auto; min-height: 560px; border: 0; border-right: var(--rule); }
+    .coll__intro { padding: 64px 48px; justify-content: center; }
+    .coll__lead { font-size: 17px; }
+    .items { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0 16px; }
+    .item { padding: 48px 32px 56px; }
+    .item__name { font-size: 18px; }
+    .item + .item { border-top: 0; border-left: 1px solid var(--hair); }
+    .br-sp { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div class="header__bar">
+      <!-- ロゴ画像を使う場合：<a href="#top" class="logo"><img src="{{IMG_BASE}}{{LOGO_FILE}}" alt="{{BRAND_EN}}" style="height:20px;width:auto"></a> -->
+      <a href="#top" class="logo" aria-label="{{BRAND_EN}}">{{BRAND_EN}}</a>
+      <span class="year">{{FOUNDED_YEAR}}</span>
+    </div>
+    <nav class="nav" aria-label="ページ内メニュー">
+      <a href="#story">{{S1_NAV}}</a>
+      <a href="#craft">{{S2_NAV}}</a>
+      <a href="#philosophy">{{S3_NAV}}</a>
+      <a href="#quality">{{S4_NAV}}</a>
+      <a href="#collection">{{S5_NAV}}</a><!-- 05 を削除する場合はこの行も削除 -->
+      <span class="year">{{FOUNDED_YEAR}}</span>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- 00 ヒーロー -->
+    <section class="hero">
+      <div class="hero__text stack">
+        <p class="label" style="letter-spacing:.3em">{{HERO_EYEBROW_EN}}</p>
+        <h1 class="hero__title">{{HERO_TITLE_LINE1}}<br>{{HERO_TITLE_LINE2}}</h1>
+        <hr class="gold-line">
+        <p class="body">{{HERO_LEAD}}</p>
+        <div class="stats">
+          <div><b>{{STAT1_VALUE}}</b><span>{{STAT1_LABEL_EN}}</span></div>
+          <div><b>{{STAT2_VALUE}}</b><span>{{STAT2_LABEL_EN}}</span></div>
+          <div><b>{{STAT3_VALUE}}</b><span>{{STAT3_LABEL_EN}}</span></div>
+        </div>
+      </div>
+      <div class="slot hero__img" data-label="画像① キービジュアル"><img src="{{IMG_BASE}}{{IMG1_FILE}}" width="{{IMG1_W}}" height="{{IMG1_H}}" style="object-position:50% 50%" alt="{{IMG1_ALT}}" fetchpriority="high"></div>
+    </section>
+
+    <!-- 01 ストーリー（ブランドの歴史＋代表者メッセージ） -->
+    <section class="history stack" id="story">
+      <div>
+        <p class="label">01 — {{S1_LABEL_EN}}</p>
+        <h2 class="h" style="margin-top:14px">{{S1_TITLE_LINE1}}<br>{{S1_TITLE_LINE2}}</h2>
+      </div>
+      <p class="body">{{S1_BODY}}</p>
+      <div class="message stack">
+        <p>{{S1_MESSAGE}}</p>
+        <span class="cite">{{S1_MESSAGE_BY}}</span>
+      </div>
+    </section>
+
+    <!-- 02 クラフト（画像左・テキスト右） -->
+    <section class="split split--img-left" id="craft">
+      <div class="slot split__img" data-label="画像② 工房・手仕事"><img src="{{IMG_BASE}}{{IMG2_FILE}}" width="{{IMG2_W}}" height="{{IMG2_H}}" style="object-position:50% 50%" alt="{{IMG2_ALT}}" loading="lazy"></div>
+      <div class="split__text stack">
+        <p class="label">02 — {{S2_LABEL_EN}}</p>
+        <h2 class="h">{{S2_TITLE}}</h2>
+        <hr class="gold-line">
+        <p class="body">{{S2_BODY_1}}</p>
+        <p class="body">{{S2_BODY_2}}</p>
+        <p class="body">{{S2_BODY_3}}</p><!-- 段落は増減可 -->
+      </div>
+    </section>
+
+    <!-- 03 フィロソフィー（大きな引用＋3本柱） -->
+    <section class="art" id="philosophy">
+      <div class="art__head stack">
+        <p class="label">03 — {{S3_LABEL_EN_LINE1}}<br>{{S3_LABEL_EN_LINE2}}</p>
+        <div class="stack" style="gap:22px">
+          <p class="quote-l">“{{S3_QUOTE}}”</p>
+          <span class="cite">{{S3_QUOTE_BY}}</span>
+        </div>
+      </div>
+      <div class="pillars">
+        <div class="pillar stack">
+          <span class="label">{{PILLAR1_EN}}</span>
+          <p class="body">{{PILLAR1_BODY}}</p>
+        </div>
+        <div class="pillar stack">
+          <span class="label">{{PILLAR2_EN}}</span>
+          <p class="body">{{PILLAR2_BODY}}</p>
+        </div>
+        <div class="pillar stack">
+          <span class="label">{{PILLAR3_EN}}</span>
+          <p class="body">{{PILLAR3_BODY}}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 クオリティ（テキスト左・画像右） -->
+    <section class="split split--img-right" id="quality">
+      <div class="split__text stack">
+        <p class="label">04 — {{S4_LABEL_EN}}</p>
+        <h2 class="h">{{S4_TITLE}}</h2>
+        <p class="quote-s">“{{S4_QUOTE}}”</p><!-- 引用が無い場合は、この行と次の cite 行を削除 -->
+        <span class="cite">{{S4_QUOTE_BY}}</span>
+        <p class="body">{{S4_BODY_1}}</p>
+        <p class="body">{{S4_BODY_2}}</p>
+      </div>
+      <div class="slot split__img" data-label="画像③ 素材・ディテール"><img src="{{IMG_BASE}}{{IMG3_FILE}}" width="{{IMG3_W}}" height="{{IMG3_H}}" style="object-position:50% 50%" alt="{{IMG3_ALT}}" loading="lazy"></div>
+    </section>
+
+    <!-- OPTIONAL: 05 コレクション紹介（トップ画像＋導入文＋3アイテム） -->
+    <section class="coll" id="collection">
+      <div class="coll__head">
+        <div class="slot coll__top" data-label="コレクション トップ画像"><img src="{{IMG_BASE}}{{C_TOP_FILE}}" width="{{C_TOP_W}}" height="{{C_TOP_H}}" alt="{{C_TOP_ALT}}" loading="lazy"></div>
+        <div class="coll__intro stack">
+          <p class="label">05 — {{S5_LABEL_EN}}</p>
+          <h2 class="h">{{S5_TITLE}}</h2>
+          <hr class="gold-line">
+          <p class="coll__lead">{{S5_LEAD}}</p>
+          <p class="body" style="font-size:13px;line-height:2.25">{{S5_BODY}}</p>
+        </div>
+      </div>
+      <div class="items">
+        <article class="item stack">
+          <div class="slot item__img" data-label="{{ITEM1_NAME}}"><img src="{{IMG_BASE}}{{ITEM1_FILE}}" width="{{ITEM1_W}}" height="{{ITEM1_H}}" alt="{{ITEM1_ALT}}" loading="lazy"></div>
+          <span class="label" style="letter-spacing:.2em">{{ITEM1_EN}}</span>
+          <h3 class="item__name">{{ITEM1_NAME}}</h3>
+          <p class="body">{{ITEM1_BODY}}</p>
+        </article>
+        <article class="item stack">
+          <div class="slot item__img" data-label="{{ITEM2_NAME}}"><img src="{{IMG_BASE}}{{ITEM2_FILE}}" width="{{ITEM2_W}}" height="{{ITEM2_H}}" alt="{{ITEM2_ALT}}" loading="lazy"></div>
+          <span class="label" style="letter-spacing:.2em">{{ITEM2_EN}}</span>
+          <h3 class="item__name">{{ITEM2_NAME}}</h3>
+          <p class="body">{{ITEM2_BODY}}</p>
+        </article>
+        <article class="item stack">
+          <div class="slot item__img" data-label="{{ITEM3_NAME}}"><img src="{{IMG_BASE}}{{ITEM3_FILE}}" width="{{ITEM3_W}}" height="{{ITEM3_H}}" alt="{{ITEM3_ALT}}" loading="lazy"></div>
+          <span class="label" style="letter-spacing:.2em">{{ITEM3_EN}}</span>
+          <h3 class="item__name">{{ITEM3_NAME}}</h3>
+          <p class="body">{{ITEM3_BODY}}</p>
+        </article>
+      </div>
+    </section>
+    <!-- /OPTIONAL -->
+
+    <!-- 06 CTA（公式サイト誘導） -->
+    <section class="cta">
+      <div class="slot" data-label="画像④ CTA背景"><img src="{{IMG_BASE}}{{IMG4_FILE}}" width="{{IMG4_W}}" height="{{IMG4_H}}" style="object-position:50% 50%" alt="" loading="lazy"></div>
+      <div class="cta__veil"></div>
+      <div class="cta__inner stack">
+        <div>
+          <p class="cta__title">{{CTA_TITLE_LINE1}}<br>{{CTA_TITLE_LINE2}}</p>
+        </div>
+        <div>
+          <p class="cta__lead">{{CTA_LEAD}}</p>
+          <a class="btn" href="{{OFFICIAL_URL}}" target="_blank" rel="noopener">{{CTA_BUTTON_EN}} <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span class="logo">{{BRAND_EN}}</span>
+    <small>SINCE {{FOUNDED_YEAR}} — {{ORIGIN_EN}}</small>
+  </footer>
+
+</div>
+</body>
+</html>
