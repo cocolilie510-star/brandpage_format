@@ -124,6 +124,17 @@
   .footer small { font-family: var(--latin); font-size: 10px; letter-spacing: .14em; color: var(--muted); }
 
   /* PC（1180px グリッド） */
+  /* 05 ブライダル */
+  .bridal__intro { padding: 56px var(--pad) 48px; gap: 22px; }
+  .bridal__lead { font-family: var(--mincho); font-size: 16px; line-height: 2.05; text-wrap: pretty; }
+  .bridal__top { aspect-ratio: 1 / 1; border-top: var(--rule); border-bottom: var(--rule); }
+  .rings { padding: 0 var(--pad); }
+  .ring { padding: 40px 0 44px; gap: 16px; }
+  .ring + .ring { border-top: 1px solid var(--hair); }
+  .ring__img { aspect-ratio: 4 / 3; margin-bottom: 8px; }
+  .ring__name { font-family: var(--mincho); font-weight: 500; font-size: 20px; line-height: 1.6; letter-spacing: .04em; }
+  .ring .body { font-size: 13px; line-height: 2.2; }
+
   @media (min-width: 900px) {
     :root { --pad: 48px; }
     body { background: #f3f2f2; }
@@ -168,6 +179,14 @@
     .cta__lead { max-width: 420px; }
     .btn { align-self: flex-start; }
     .footer { flex-direction: row; justify-content: space-between; align-items: center; padding: 30px 48px; }
+    .bridal__head { display: grid; grid-template-columns: 1fr 1fr; border-bottom: var(--rule); }
+    .bridal__top { aspect-ratio: auto; min-height: 560px; border: 0; border-right: var(--rule); }
+    .bridal__intro { padding: 64px 48px; justify-content: center; }
+    .bridal__lead { font-size: 17px; }
+    .rings { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0 16px; }
+    .ring { padding: 48px 32px 56px; }
+    .ring__name { font-size: 18px; }
+    .ring + .ring { border-top: 0; border-left: 1px solid var(--hair); }
     .br-sp { display: none; }
   }
 </style>
@@ -186,6 +205,7 @@
       <a href="#savoir-faire">SAVOIR-FAIRE</a>
       <a href="#art">ART</a>
       <a href="#materials">MATERIALS</a>
+      <a href="#bridal">BRIDAL</a>
       <span class="year">1924</span>
     </nav>
   </header>
@@ -272,7 +292,41 @@
       <div class="slot split__img" data-label="横長画像③ 宝石・ディテール"><img src="https://hidakahonten.jp/wp-content/uploads/2023/08/damiani_1.webp" width="1640" height="922" style="object-position:27% 50%" alt="ルーペで宝石を鑑定する様子" loading="lazy"></div>
     </section>
 
-    <!-- 05 CTA -->
+    <!-- 05 ブライダル -->
+    <section class="bridal" id="bridal">
+      <div class="bridal__head">
+        <div class="slot bridal__top" data-label="ブライダル トップ画像"><img src="https://hidakahonten.jp/wp-content/uploads/2023/08/damiani_5.webp" width="1068" height="1066" alt="ダイヤモンドのリングとブレスレットを身に着けた女性の手元" loading="lazy"></div>
+        <div class="bridal__intro stack">
+          <p class="label">05 — BRIDAL COLLECTION</p>
+          <h2 class="h">ブライダルリング</h2>
+          <hr class="gold-line">
+          <p class="bridal__lead">ブライダルのために揃えたダミアーニのジュエリーコレクションは、そのかけがえのない瞬間に寄り添います。身に着けるたびに想いを深め、大切な記憶として心に刻まれていく。永く愛され続ける、特別なシンボルとなるのです。</p>
+          <p class="body" style="font-size:13px;line-height:2.25">ダミアーニのリングには、100年の伝統が息づいています。永遠の愛を誓うシンボルとして、メゾンは伝統的なマリッジリングの概念を再解釈し、コンテンポラリージュエリーの傑作へと昇華させています。ホワイトゴールド、イエローゴールド、ローズゴールド、そしてプラチナからお選びいただけるダミアーニのマリッジリングは、「コンフォートフィット」と呼ばれ、リングの内縁に丸みを持たせたフィット感が得られるデザインにより、着け心地が良いことが特徴です。大切な日の特別な価値を示すように、すべてのマリッジリングには小さなダイヤモンドがあしらわれています。</p>
+        </div>
+      </div>
+      <div class="rings">
+        <article class="ring stack">
+          <div class="slot ring__img" data-label="ペアリング"><img src="https://hidakahonten.jp/wp-content/uploads/2023/08/damiani_7.webp" width="1064" height="1060" alt="ペアリングとネックレスを身に着けた二人の手元" loading="lazy"></div>
+          <span class="label" style="letter-spacing:.2em">PAIR RINGS</span>
+          <h3 class="ring__name">ペアリング</h3>
+          <p class="body">二人の絆を映し出すクリエーション。ダミアーニのペアリングは共に歩む人生の大切な瞬間を、さりげない美しさと上品な輝きで彩ります。</p>
+        </article>
+        <article class="ring stack">
+          <div class="slot ring__img" data-label="エンゲージメントリング"><img src="https://hidakahonten.jp/wp-content/uploads/2023/08/damiani_8.webp" width="1180" height="932" alt="3色のゴールドのリングを重ね着けした手元" loading="lazy"></div>
+          <span class="label" style="letter-spacing:.2em">ENGAGEMENT RINGS</span>
+          <h3 class="ring__name">エンゲージメントリング</h3>
+          <p class="body">ダミアーニのダイアモンドは永遠に輝き続けます。ホワイトゴールドまたはプラチナで丁寧に仕立てられたクラフツマンシップの結晶。多彩なセッティングとスタイルの中からお選びいただけます。その中心で輝くダイヤモンドは、お客様の想いに寄り添って選ばれ、唯一無二のリングへ仕上がります。あなただけの特別な夢をかたちにする一本です。</p>
+        </article>
+        <article class="ring stack">
+          <div class="slot ring__img" data-label="マリッジリング＆エタニティリング"><img src="https://hidakahonten.jp/wp-content/uploads/2023/08/damiani_6.webp" width="1200" height="946" alt="パヴェダイヤモンドのアームにセンターストーンをセッティングしたリング" loading="lazy"></div>
+          <span class="label" style="letter-spacing:.2em">WEDDING &amp; ETERNITY RINGS</span>
+          <h3 class="ring__name">マリッジリング＆エタニティリング</h3>
+          <p class="body">マリッジリングは、時を超えて続く二人の絆を祝うものです。ダミアーニはその伝統を受け継ぎ、クラシックからコンテンポラリーまで幅広いスタイルの洗練されたリングを生み出し、永遠の愛の誓いをかたちにしています。エタニティリングは、共に歩む人生の大切な瞬間を祝福するのにふさわしい一本です。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 06 CTA -->
     <section class="cta">
       <div class="slot" data-label="横長画像④ 作品"><img src="https://hidakahonten.jp/wp-content/uploads/2023/08/damiani_3.webp" width="1640" height="922" style="object-position:50% 50%" alt="" loading="lazy"></div>
       <div class="cta__veil"></div>
